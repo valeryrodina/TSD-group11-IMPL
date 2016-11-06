@@ -448,6 +448,8 @@ public abstract class AbstractGUIController implements Initializable {
 		TableColumn<CtCrisis, String> idCol = new TableColumn<CtCrisis, String>("ID");
 		TableColumn<CtCrisis, String> dateCol = new TableColumn<CtCrisis, String>("Date");
 		TableColumn<CtCrisis, String> timeCol = new TableColumn<CtCrisis, String>("Time");
+		TableColumn<CtCrisis, String> dateCol2 = new TableColumn<CtCrisis, String>("Date2");
+		TableColumn<CtCrisis, String> timeCol2 = new TableColumn<CtCrisis, String>("Time2");
 		TableColumn<CtCrisis, String> typeCol = new TableColumn<CtCrisis, String>("Type");
 		TableColumn<CtCrisis, Double> longitudeCol = new TableColumn<CtCrisis, Double>("Longitude");
 		TableColumn<CtCrisis, Double> latitudeCol = new TableColumn<CtCrisis, Double>("Latitude");
@@ -468,6 +470,18 @@ public abstract class AbstractGUIController implements Initializable {
 				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instant.time.toString());
 			}
 		});
+
+		dateCol2.setCellValueFactory(new Callback<CellDataFeatures<CtCrisis, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<CtCrisis, String> crisis) {
+				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantHelp.date.toString());
+			}
+		});
+		timeCol2.setCellValueFactory(new Callback<CellDataFeatures<CtCrisis, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<CtCrisis, String> crisis) {
+				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantHelp.time.toString());
+			}
+		});
+		
 		longitudeCol.setCellValueFactory(new Callback<CellDataFeatures<CtCrisis, Double>, ObservableValue<Double>>() {
 			public ObservableValue<Double> call(CellDataFeatures<CtCrisis, Double> crisis) {
 				return new ReadOnlyObjectWrapper<Double>(crisis.getValue().location.longitude.value.getValue());
@@ -496,6 +510,8 @@ public abstract class AbstractGUIController implements Initializable {
 		tblvw.getColumns().add(idCol);
 		tblvw.getColumns().add(dateCol);
 		tblvw.getColumns().add(timeCol);
+		tblvw.getColumns().add(dateCol2);
+		tblvw.getColumns().add(timeCol2);
 		tblvw.getColumns().add(typeCol);
 		tblvw.getColumns().add(longitudeCol);
 		tblvw.getColumns().add(latitudeCol);

@@ -72,6 +72,7 @@ public class DbCrises extends DbAbstract {
 				double longitude = aCtCrisis.location.longitude.value
 						.getValue();
 
+				// instant
 				int year = aCtCrisis.instant.date.year.value.getValue();
 				int month = aCtCrisis.instant.date.month.value.getValue();
 				int day = aCtCrisis.instant.date.day.value.getValue();
@@ -86,14 +87,27 @@ public class DbCrises extends DbAbstract {
 						hour, min, sec);
 				String instant = sdf.format(calendar.getTime());
 
+				// instantHelp
+				year = aCtCrisis.instantHelp.date.year.value.getValue();
+				month = aCtCrisis.instantHelp.date.month.value.getValue();
+				day = aCtCrisis.instantHelp.date.day.value.getValue();
+
+				hour = aCtCrisis.instantHelp.time.hour.value.getValue();
+				min = aCtCrisis.instantHelp.time.minute.value.getValue();
+				sec = aCtCrisis.instantHelp.time.second.value.getValue();
+
+				calendar = new GregorianCalendar(year, month, day,
+						hour, min, sec);
+				String instantHelp = sdf.format(calendar.getTime());
+				
 				String comment = aCtCrisis.comment.value.getValue();
 
 				log.debug("[DATABASE]-Insert crisis");
 				int val = st.executeUpdate("INSERT INTO " + dbName + ".crises"
-						+ "(id,type,status,latitude,longitude,instant,comment)"
+						+ "(id,type,status,latitude,longitude,instant,instantHelp,comment)"
 						+ "VALUES(" + "'" + id + "'" + ",'" + type + "','"
 						+ status + "', " + latitude + ", " + longitude + ", '"
-						+ instant + "','" + comment + "')");
+						+ instant + "','" + instantHelp + "','" + comment + "')");
 
 				log.debug(val + " row affected");
 			} catch (SQLException s) {
@@ -185,12 +199,26 @@ public class DbCrises extends DbAbstract {
 					DtTime aDtTime = ICrashUtils.setTime(h, min, sec);
 					DtDateAndTime aInstant = new DtDateAndTime(aDtDate, aDtTime);
 
+					//crisis's instantHelp
+					instant = res.getTimestamp("instantHelp");
+					cal.setTime(instant);
+
+					d = cal.get(Calendar.DATE);
+					m = cal.get(Calendar.MONTH);
+					y = cal.get(Calendar.YEAR);
+					aDtDate = ICrashUtils.setDate(y, m, d);
+					h = cal.get(Calendar.HOUR_OF_DAY);
+					min = cal.get(Calendar.MINUTE);
+					sec = cal.get(Calendar.SECOND);
+					aDtTime = ICrashUtils.setTime(h, min, sec);
+					DtDateAndTime aInstantHelp = new DtDateAndTime(aDtDate, aDtTime);
+
 					//crisis's comment  
 					DtComment aDtComment = new DtComment(new PtString(
 							res.getString("comment")));
 
 					aCtCrisis.init(aId, aType, aStatus, aDtGPSLocation,
-							aInstant, aDtComment);
+							aInstant, aInstantHelp, aDtComment);
 
 				}
 
@@ -331,13 +359,27 @@ public class DbCrises extends DbAbstract {
 					int sec = cal.get(Calendar.SECOND);
 					DtTime aDtTime = ICrashUtils.setTime(h, min, sec);
 					DtDateAndTime aInstant = new DtDateAndTime(aDtDate, aDtTime);
+					
+					//crisis's instantHelp
+					instant = res.getTimestamp("instantHelp");
+					cal.setTime(instant);
+
+					d = cal.get(Calendar.DATE);
+					m = cal.get(Calendar.MONTH);
+					y = cal.get(Calendar.YEAR);
+					aDtDate = ICrashUtils.setDate(y, m, d);
+					h = cal.get(Calendar.HOUR_OF_DAY);
+					min = cal.get(Calendar.MINUTE);
+					sec = cal.get(Calendar.SECOND);
+					aDtTime = ICrashUtils.setTime(h, min, sec);
+					DtDateAndTime aInstantHelp = new DtDateAndTime(aDtDate, aDtTime);
 
 					//crisis' comment  
 					DtComment aDtComment = new DtComment(new PtString(
 							res.getString("comment")));
 
 					aCtCrisis.init(aId, aType, aStatus, aDtGPSLocation,
-							aInstant, aDtComment);
+							aInstant, aInstantHelp, aDtComment);
 
 					//*************************************
 					aCtCoordinator = new CtCoordinator();
@@ -448,13 +490,27 @@ public class DbCrises extends DbAbstract {
 					int sec = cal.get(Calendar.SECOND);
 					DtTime aDtTime = ICrashUtils.setTime(h, min, sec);
 					DtDateAndTime aInstant = new DtDateAndTime(aDtDate, aDtTime);
+					
+					//crisis's instantHelp
+					instant = res.getTimestamp("instantHelp");
+					cal.setTime(instant);
+
+					d = cal.get(Calendar.DATE);
+					m = cal.get(Calendar.MONTH);
+					y = cal.get(Calendar.YEAR);
+					aDtDate = ICrashUtils.setDate(y, m, d);
+					h = cal.get(Calendar.HOUR_OF_DAY);
+					min = cal.get(Calendar.MINUTE);
+					sec = cal.get(Calendar.SECOND);
+					aDtTime = ICrashUtils.setTime(h, min, sec);
+					DtDateAndTime aInstantHelp = new DtDateAndTime(aDtDate, aDtTime);
 
 					//crisis' comment  
 					DtComment aDtComment = new DtComment(new PtString(
 							res.getString("comment")));
 
 					aCtCrisis.init(aId, aType, aStatus, aDtGPSLocation,
-							aInstant, aDtComment);
+							aInstant, aInstantHelp, aDtComment);
 
 					//add instance to the hash
 					cmpSystemCtCrisis.put(aCtCrisis.id.value.getValue(),
@@ -567,7 +623,7 @@ public class DbCrises extends DbAbstract {
 				String sql = "UPDATE "
 						+ dbName
 						+ ".crises SET `type` = ?, `status` = ?, `latitude` = ?, `longitude` = ?,"
-						+ " `instant` = ?, `comment` = ? WHERE id = ?";
+						+ " `instant` = ?, `instantHelp` = ?, `comment` = ? WHERE id = ?";
 				String id = aCtCrisis.id.value.getValue();
 				String type = aCtCrisis.type.toString();
 				String status = aCtCrisis.status.toString();
@@ -575,6 +631,7 @@ public class DbCrises extends DbAbstract {
 				double longitude = aCtCrisis.location.longitude.value
 						.getValue();
 
+				// instant
 				int year = aCtCrisis.instant.date.year.value.getValue();
 				int month = aCtCrisis.instant.date.month.value.getValue();
 				int day = aCtCrisis.instant.date.day.value.getValue();
@@ -589,6 +646,19 @@ public class DbCrises extends DbAbstract {
 						hour, min, sec);
 				String instant = sdf.format(calendar.getTime());
 
+				// instantHelp
+				year = aCtCrisis.instantHelp.date.year.value.getValue();
+				month = aCtCrisis.instantHelp.date.month.value.getValue();
+				day = aCtCrisis.instantHelp.date.day.value.getValue();
+
+				hour = aCtCrisis.instantHelp.time.hour.value.getValue();
+				min = aCtCrisis.instantHelp.time.minute.value.getValue();
+				sec = aCtCrisis.instantHelp.time.second.value.getValue();
+
+				calendar = new GregorianCalendar(year, month, day,
+						hour, min, sec);
+				String instantHelp = sdf.format(calendar.getTime());
+
 				String comment = aCtCrisis.comment.value.getValue();
 
 				PreparedStatement statement = conn.prepareStatement(sql);
@@ -597,8 +667,9 @@ public class DbCrises extends DbAbstract {
 				statement.setDouble(3, latitude);
 				statement.setDouble(4, longitude);
 				statement.setString(5, instant);
-				statement.setString(6, comment);
-				statement.setString(7, id);
+				statement.setString(6, instantHelp);
+				statement.setString(7, comment);
+				statement.setString(8, id);
 				int rows = statement.executeUpdate();
 				log.debug(rows + " row affected");
 			} catch (SQLException s) {

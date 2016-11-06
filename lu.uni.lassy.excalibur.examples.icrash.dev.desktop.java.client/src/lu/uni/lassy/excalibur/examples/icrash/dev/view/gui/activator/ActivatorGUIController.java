@@ -113,8 +113,15 @@ public class ActivatorGUIController extends AbstractGUIController {
 				public void handle(ActionEvent event) {
 					try {
 						if (checkIfAllDialogHasBeenFilledIn(grdpn)){
-							if (systemstateController.oeSetClock(ICrashUtils.setDateAndTime(dtpckr.getValue().getYear(), dtpckr.getValue().getMonthValue(), dtpckr.getValue().getDayOfMonth(),
-									(int)Math.floor(sldrHourPicker.getValue()), (int)Math.floor(sldrMinutePicker.getValue()), (int)Math.floor(sldrSecondPicker.getValue()))).getValue())
+							if (systemstateController.oeSetClock(
+									ICrashUtils.setDateAndTime(
+										dtpckr.getValue().getYear(),
+										dtpckr.getValue().getMonthValue(),
+										dtpckr.getValue().getDayOfMonth(),
+										(int)Math.floor(sldrHourPicker.getValue()),
+										(int)Math.floor(sldrMinutePicker.getValue()), 										(int)Math.floor(sldrSecondPicker.getValue())
+									)
+								).getValue())
 								showOKMessage("Updated", "Date and time was updated successfully");
 							else
 								showErrorMessage("Error", "There was an error updating the date and time");

@@ -53,6 +53,9 @@ public class CtCrisis implements Serializable {
 	/** The date and time of the accident that is associated to the crisis. */
 	public DtDateAndTime instant;
 	
+	/** The date and time of the accident that is associated to the crisis. */
+	public DtDateAndTime instantHelp;
+	
 	/** The comment associated with the crisis. Often refered to as the report. */
 	public DtComment comment;
 
@@ -69,13 +72,14 @@ public class CtCrisis implements Serializable {
 	 */
 	public PtBoolean init(DtCrisisID aId, EtCrisisType aType,
 			EtCrisisStatus aStatus, DtGPSLocation aLocation,
-			DtDateAndTime aInstant, DtComment aComment) {
+			DtDateAndTime aInstant, DtDateAndTime aInstantHelp, DtComment aComment) {
 
 		id = aId;
 		type = aType;
 		status = aStatus;
 		location = aLocation;
 		instant = aInstant;
+		instantHelp = aInstantHelp;
 		comment = aComment;
 
 		return new PtBoolean(true);

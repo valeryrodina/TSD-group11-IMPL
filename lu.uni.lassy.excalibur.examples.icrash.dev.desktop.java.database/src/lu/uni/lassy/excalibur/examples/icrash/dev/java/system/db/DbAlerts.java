@@ -497,7 +497,7 @@ public class DbAlerts extends DbAbstract {
 							res.getString("crises.comment")));
 
 					aCtCrisis.init(aCrisisId, aCrisisType, aCrisisStatus,
-							aCrisisDtGPSLocation, aCrisisInstant,
+							aCrisisDtGPSLocation, aCrisisInstant, aCrisisInstant,
 							aCrisisDtComment);
 
 					//add instances to the hash

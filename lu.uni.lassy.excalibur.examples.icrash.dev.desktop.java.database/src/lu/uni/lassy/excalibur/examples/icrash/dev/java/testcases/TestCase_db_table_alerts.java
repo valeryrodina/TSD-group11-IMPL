@@ -109,7 +109,7 @@ public class TestCase_db_table_alerts {
 		EtCrisisType acType = EtCrisisType.small;
 		EtCrisisStatus acStatus = EtCrisisStatus.pending;
 		DtComment acComment = new DtComment(new PtString("no report defined, yet"));
-		aCtCrisis.init(acId, acType, acStatus, aDtGPSLocation, aInstant, acComment);
+		aCtCrisis.init(acId, acType, acStatus, aDtGPSLocation, aInstant, aInstant, acComment);
 		DbAlerts.bindAlertCrisis(aCtAlert2, aCtCrisis);
 
 

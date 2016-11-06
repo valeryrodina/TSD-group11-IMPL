@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+
 import lu.uni.lassy.excalibur.examples.icrash.dev.java.environment.IcrashEnvironment;
 import lu.uni.lassy.excalibur.examples.icrash.dev.java.environment.actors.ActActivator;
 import lu.uni.lassy.excalibur.examples.icrash.dev.java.environment.actors.ActActivatorImpl;
@@ -689,7 +690,7 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 				EtCrisisStatus acStatus = EtCrisisStatus.pending;
 				DtComment acComment = new DtComment(new PtString(
 						"no report defined, yet"));
-				aCtCrisis.init(acId, acType, acStatus, aDtGPSLocation, aInstant,
+				aCtCrisis.init(acId, acType, acStatus, aDtGPSLocation, aInstant, aInstant,
 						acComment);
 	
 				//DB: insert crisis in the database
@@ -1053,16 +1054,29 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 			isSystemStarted();
 			//PreP2
 			isUserLoggedIn();
-			CtCrisis theCrisis = cmpSystemCtCrisis.get(aDtCrisisID.value
-					.getValue());
+			CtCrisis theCrisis = cmpSystemCtCrisis.get(aDtCrisisID.value.getValue());
+
 			if (currentRequestingAuthenticatedActor instanceof ActCoordinator) {
 				ActCoordinator theActCoordinator = (ActCoordinator) currentRequestingAuthenticatedActor;
 				//PostF1
 				theCrisis.status = EtCrisisStatus.closed;
-				DbCrises.updateCrisis(theCrisis);
+
 				//PostF2
-				assCtCrisisCtCoordinator.remove(theCrisis);
+				boolean successFlag = false;
+				if (theCrisis.instant.toSecondsQty().getValue() >= ctState.clock.toSecondsQty().getValue()) {
+					log.warn("The clock of " + theCrisis.instant.toString() + 
+							  " is more than the current clock of "+ ctState.clock.toString());
+					theCrisis.instantHelp = theCrisis.instant;
+				}
+				else {
+					theCrisis.instantHelp = ctState.clock;
+					successFlag = true;
+				}
+				
+				DbCrises.updateCrisis(theCrisis);
 				//PostF3
+				assCtCrisisCtCoordinator.remove(theCrisis);
+				//PostF4
 				Collection<CtAlert> keys = assCtAlertCtCrisis.keySet();
 				CtAlert[] alertkeys = keys.toArray(new CtAlert[0]);
 				for (int i = 0; i < alertkeys.length; i++) {
@@ -1076,11 +1090,17 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 					}
 				}
 	
-				//PostF4	
+				//PostF5
 				PtString aMessage = new PtString("The crisis "
 						//+ "with ID '"
 						//+ aDtCrisisID.value.getValue() + "' "
 								+ "is now closed !");
+				if (!successFlag) {
+					aMessage = new PtString("The crisis is now closed, but the start clock of crysis ("
+								+ theCrisis.instant.toString() + ") is more, \n than the current clock ("
+								+ ctState.clock.toString() + ").");
+				}
+
 				try {
 					theActCoordinator.ieMessage(aMessage);
 				} catch (RemoteException e) {

@@ -88,7 +88,7 @@ public class TestCase_db_table_crises {
 		
 		
 		CtCrisis aCtCrisis = new CtCrisis();
-		aCtCrisis.init(aId, aType, aStatus,aDtGPSLocation,aInstant, aDtComment);
+		aCtCrisis.init(aId, aType, aStatus, aDtGPSLocation, aInstant, aInstant, aDtComment);
 		
 		DbCrises.insertCrisis(aCtCrisis);
 		
