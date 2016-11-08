@@ -182,8 +182,8 @@ public class ICrashAdminGUIController extends AbstractAuthGUIController {
 		bttnAdminLogoff.setDisable(!loggedOn);
 		bttnAdminLogin.setDefaultButton(!loggedOn);
 		if (!loggedOn){
-			txtfldAdminUserName.setText("");
-			psswrdfldAdminPassword.setText("");
+			txtfldAdminUserName.setText("icrashadmin");
+			psswrdfldAdminPassword.setText("7WXC1359");
 			txtfldAdminUserName.requestFocus();
 			for (int i = anchrpnCoordinatorDetails.getChildren().size() -1; i >= 0; i--)
 				anchrpnCoordinatorDetails.getChildren().remove(i);

@@ -17,8 +17,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -1022,9 +1024,41 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 				//go through all existing crises
 				for (String crisisKey : cmpSystemCtCrisis.keySet()) {
 					CtCrisis crisis = cmpSystemCtCrisis.get(crisisKey);
-					if (crisis.status.toString().equals(aEtCrisisStatus.toString()))
+					if (crisis.status.toString().equals(aEtCrisisStatus.toString())) {
+						
+						// update current time of crisis
+						if (crisis.status.toString().equals(EtCrisisStatus.handled.toString())
+								|| crisis.status.toString().equals(EtCrisisStatus.pending.toString())) {
+
+							Calendar cal = new GregorianCalendar(0, 0, 0, 0, 0, 0); // return 2/11/31/*/*/*
+							// check system time and crisis time
+							if (ctState.clock.toSecondsQty().getValue() > crisis.instant.toSecondsQty().getValue()) {
+								// crisis`s age concerning of crisis`s start time
+								long timeCounter = ctState.clock.toSecondsQty().getValue()
+													- crisis.instant.toSecondsQty().getValue();
+								cal.setTimeInMillis(1000*timeCounter);	// return 1970/0/1/*/*/*
+							}
+							int d = cal.get(Calendar.DATE);
+							int m = cal.get(Calendar.MONTH);
+							int y = cal.get(Calendar.YEAR);
+							if ((y == 2 && m == 11 && d == 31)
+									|| (y == 1970 && m == 0 && d == 1)) {
+								y = 0;
+								m = 0;
+								d = 0;
+							}
+
+							DtDate aDtDate = ICrashUtils.setDate(0, m, d);
+							int h = cal.get(Calendar.HOUR_OF_DAY);
+							int min = cal.get(Calendar.MINUTE);
+							int sec = cal.get(Calendar.SECOND);
+							DtTime aDtTime = ICrashUtils.setTime(h, min, sec);
+							crisis.instantHelp = new DtDateAndTime(aDtDate, aDtTime);
+						}
+					
 						//PostF1
 						crisis.isSentToCoordinator(aActCoordinator);
+					}
 				}
 				return new PtBoolean(true);
 			}
