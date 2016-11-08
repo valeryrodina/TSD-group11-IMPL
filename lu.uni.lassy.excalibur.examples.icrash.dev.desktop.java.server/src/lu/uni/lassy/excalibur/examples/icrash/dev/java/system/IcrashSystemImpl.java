@@ -863,12 +863,34 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 					.getValue());
 			if (currentRequestingAuthenticatedActor instanceof ActCoordinator) {
 				ActCoordinator theActCoordinator = (ActCoordinator) currentRequestingAuthenticatedActor;
-				//PostF1
+				// if need "close" status -> "close" function
+				if (aEtCrisisStatus == EtCrisisStatus.closed) {
+					theActCoordinator.ieMessage(new PtString("closed!"));
+					return oeCloseCrisis(aDtCrisisID);
+				}
+
+				PtString aMessage  = null;
+				// if need "solved" status -> change status by "solved"
+				if (aEtCrisisStatus == EtCrisisStatus.solved) {
+					//PostF1
+					if (theCrisis.instant.toSecondsQty().getValue() >= ctState.clock.toSecondsQty().getValue()) {
+						log.warn("The clock of " + theCrisis.instant.toString() + 
+								  " is more than the current clock of "+ ctState.clock.toString());
+						theCrisis.instantHelp = theCrisis.instant;
+						aMessage = new PtString("The crisis is now SOLVED, but the start clock of crysis ("
+								+ theCrisis.instant.toString() + ") is more, \n than the current clock ("
+								+ ctState.clock.toString() + ").");
+					}
+					else {
+						aMessage = new PtString("The crisis is now SOLVED success!");
+						theCrisis.instantHelp = ctState.clock;
+					}
+				}
 				theCrisis.status = aEtCrisisStatus;
 				DbCrises.updateCrisis(theCrisis);
-				PtString aMessage = new PtString("The crisis status has been updated !");
+				if (aMessage == null) aMessage = new PtString("The crisis status has been updated !");
 				theActCoordinator.ieMessage(aMessage);
-	
+
 				return new PtBoolean(true);
 			}
 		}
@@ -1072,7 +1094,7 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 					theCrisis.instantHelp = ctState.clock;
 					successFlag = true;
 				}
-				
+
 				DbCrises.updateCrisis(theCrisis);
 				//PostF3
 				assCtCrisisCtCoordinator.remove(theCrisis);

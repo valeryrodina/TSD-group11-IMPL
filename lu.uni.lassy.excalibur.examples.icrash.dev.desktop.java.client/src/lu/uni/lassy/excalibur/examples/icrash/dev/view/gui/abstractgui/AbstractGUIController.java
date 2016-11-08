@@ -446,10 +446,10 @@ public abstract class AbstractGUIController implements Initializable {
 	 */
 	public void setUpCrisesTables(TableView<CtCrisis>tblvw){
 		TableColumn<CtCrisis, String> idCol = new TableColumn<CtCrisis, String>("ID");
-		TableColumn<CtCrisis, String> dateCol = new TableColumn<CtCrisis, String>("Date");
-		TableColumn<CtCrisis, String> timeCol = new TableColumn<CtCrisis, String>("Time");
-		TableColumn<CtCrisis, String> dateCol2 = new TableColumn<CtCrisis, String>("Date2");
-		TableColumn<CtCrisis, String> timeCol2 = new TableColumn<CtCrisis, String>("Time2");
+		TableColumn<CtCrisis, String> dateCol = new TableColumn<CtCrisis, String>("StartDate");
+		TableColumn<CtCrisis, String> timeCol = new TableColumn<CtCrisis, String>("StartTime");
+		TableColumn<CtCrisis, String> dateCol2 = new TableColumn<CtCrisis, String>("Date");
+		TableColumn<CtCrisis, String> timeCol2 = new TableColumn<CtCrisis, String>("Time");
 		TableColumn<CtCrisis, String> typeCol = new TableColumn<CtCrisis, String>("Type");
 		TableColumn<CtCrisis, Double> longitudeCol = new TableColumn<CtCrisis, Double>("Longitude");
 		TableColumn<CtCrisis, Double> latitudeCol = new TableColumn<CtCrisis, Double>("Latitude");
