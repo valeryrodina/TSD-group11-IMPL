@@ -473,12 +473,12 @@ public abstract class AbstractGUIController implements Initializable {
 
 		dateCol2.setCellValueFactory(new Callback<CellDataFeatures<CtCrisis, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<CtCrisis, String> crisis) {
-				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantHelp.date.toString());
+				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantOfEnd.date.toString());
 			}
 		});
 		timeCol2.setCellValueFactory(new Callback<CellDataFeatures<CtCrisis, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<CtCrisis, String> crisis) {
-				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantHelp.time.toString());
+				return new ReadOnlyObjectWrapper<String>(crisis.getValue().instantOfEnd.time.toString());
 			}
 		});
 		

@@ -867,6 +867,7 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 				ActCoordinator theActCoordinator = (ActCoordinator) currentRequestingAuthenticatedActor;
 				// if need "close" status -> "close" function
 				if (aEtCrisisStatus == EtCrisisStatus.closed) {
+					//PostF1
 					theActCoordinator.ieMessage(new PtString("closed!"));
 					return oeCloseCrisis(aDtCrisisID);
 				}
@@ -874,20 +875,21 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 				PtString aMessage  = null;
 				// if need "solved" status -> change status by "solved"
 				if (aEtCrisisStatus == EtCrisisStatus.solved) {
-					//PostF1
+					//PostF2
 					if (theCrisis.instant.toSecondsQty().getValue() >= ctState.clock.toSecondsQty().getValue()) {
 						log.warn("The clock of " + theCrisis.instant.toString() + 
 								  " is more than the current clock of "+ ctState.clock.toString());
-						theCrisis.instantHelp = theCrisis.instant;
+						theCrisis.instantOfEnd = theCrisis.instant;
 						aMessage = new PtString("The crisis is now SOLVED, but the start clock of crysis ("
 								+ theCrisis.instant.toString() + ") is more, \n than the current clock ("
 								+ ctState.clock.toString() + ").");
 					}
 					else {
 						aMessage = new PtString("The crisis is now SOLVED success!");
-						theCrisis.instantHelp = ctState.clock;
+						theCrisis.instantOfEnd = ctState.clock;
 					}
 				}
+				//PostF3
 				theCrisis.status = aEtCrisisStatus;
 				DbCrises.updateCrisis(theCrisis);
 				if (aMessage == null) aMessage = new PtString("The crisis status has been updated !");
@@ -1053,7 +1055,7 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 							int min = cal.get(Calendar.MINUTE);
 							int sec = cal.get(Calendar.SECOND);
 							DtTime aDtTime = ICrashUtils.setTime(h, min, sec);
-							crisis.instantHelp = new DtDateAndTime(aDtDate, aDtTime);
+							crisis.instantOfEnd = new DtDateAndTime(aDtDate, aDtTime);
 						}
 					
 						//PostF1
@@ -1122,10 +1124,10 @@ public class IcrashSystemImpl extends UnicastRemoteObject implements
 				if (theCrisis.instant.toSecondsQty().getValue() >= ctState.clock.toSecondsQty().getValue()) {
 					log.warn("The clock of " + theCrisis.instant.toString() + 
 							  " is more than the current clock of "+ ctState.clock.toString());
-					theCrisis.instantHelp = theCrisis.instant;
+					theCrisis.instantOfEnd = theCrisis.instant;
 				}
 				else {
-					theCrisis.instantHelp = ctState.clock;
+					theCrisis.instantOfEnd = ctState.clock;
 					successFlag = true;
 				}
 
